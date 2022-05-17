@@ -1,6 +1,8 @@
-import React from 'react';
+import React,{useState, useEffect} from 'react';
 import styled from 'styled-components';
 import Cards from '../Cards';
+import { useSession } from 'next-auth/react';
+import useSpotify from '../../hooks/useSpotify';
 
 const Container = styled.div`
     height: 45%;
@@ -27,8 +29,19 @@ const Container = styled.div`
 
 
 function CardContainer() {
-    let trackname = "escalate";
-    let artist = 'hari'
+    const spotifyApi = useSpotify()
+    const { data: session } = useSession();
+    const [playList, setPlayList] = useState([]);
+
+    useEffect(() => { 
+        if (spotifyApi.getAccessToken()) {
+            spotifyApi.getUserPlaylists().then((data) => {
+                setPlayList(data.body.items)
+            })
+        }
+    }, [session, spotifyApi]);
+    
+    console.log(playList)
     return (
         <>
             <Container>

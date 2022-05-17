@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { getProviders, signIn} from 'next-auth/react'
+import { getProviders, signIn } from "next-auth/react"
 
 
 const Container = styled.div`
@@ -21,19 +21,39 @@ const Container = styled.div`
         padding: 10px;
     }
 `
-function Login() {
-    // const v = 
+
+
+function Login({providers}) {
+    const provider = Object.values(providers)[0];
+    useEffect(() => {
+       async () => {
+           
+       }
+    },[providers])
     return (
          <Container>
             <div className='logo'>
-                <img src="https://links.papareact.com/9xl" alt="" />
+                <img src="https://links.papareact.com/9xl" alt="logo" />
             </div>
-            <button>
-                <a href="http://">Login with Spotify</a>
+            <button onClick={() => signIn(provider.id, {callbackUrl: "/"} )}>
+                Login with {provider.name}
             </button>   
         </Container>
   )
 }
 
 export default Login;
+
+
+// server side rendering 
+
+export async function getServerSideProps() {
+    const providers = await getProviders();
+    return {
+        props: {
+           providers
+        },
+    }
+}
+
 
